@@ -22,17 +22,19 @@ export function Sidebar({
   hunkStatuses,
 }: SidebarProps) {
   return (
-    <aside className="w-80 flex-shrink-0 border-r border-border-subtle bg-bg-surface flex flex-col h-full">
-      <div className="px-4 py-5 border-b border-border-subtle">
+    <aside className="w-80 flex-shrink-0 border-r border-border-subtle surface-gradient flex flex-col h-full animate-slide-in-left">
+      <div className="px-4 py-4 border-b border-border-subtle">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-accent-blue/15 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-accent-blue/12 flex items-center justify-center ring-1 ring-accent-blue/20">
             <GitBranch className="w-4 h-4 text-accent-blue" />
           </div>
           <div>
-            <h1 className="text-sm font-semibold text-text-primary tracking-tight">
+            <h1 className="text-[13px] font-semibold text-text-primary tracking-[-0.01em]">
               Merge Mate
             </h1>
-            <p className="text-xs text-text-secondary">Conflict Resolution</p>
+            <p className="text-[11px] text-text-secondary tracking-wide uppercase">
+              Conflict Resolution
+            </p>
           </div>
         </div>
       </div>
@@ -58,7 +60,7 @@ export function Sidebar({
       </div>
 
       <div className="px-4 py-3 border-t border-border-subtle">
-        <div className="text-xs text-text-secondary">
+        <div className="text-[11px] text-text-secondary font-mono">
           {conflicts.length} files &middot;{" "}
           {conflicts.reduce((sum, c) => sum + c.hunks.length, 0)} conflicts
         </div>

@@ -33,15 +33,19 @@ export function SHAList({
     grouped.get(sha)!.push(conflict);
   }
 
+  let itemIndex = 0;
+
   return (
     <div className="py-1">
       {Array.from(grouped.entries()).map(([sha, files]) => (
         <div key={sha} className="mb-1">
           <div className="px-4 py-2 flex items-center gap-2">
-            <GitCommitHorizontal className="w-3.5 h-3.5 text-accent-amber" />
-            <code className="text-xs font-mono text-accent-amber">{sha}</code>
+            <GitCommitHorizontal className="w-3.5 h-3.5 text-accent-amber/70" />
+            <code className="text-[11px] font-mono font-medium text-accent-amber">
+              {sha}
+            </code>
           </div>
-          <div className="text-xs text-text-secondary px-4 pb-1.5 pl-10 -mt-1 truncate">
+          <div className="text-[11px] text-text-secondary/60 px-4 pb-1.5 pl-10 -mt-1 truncate">
             {files[0].commit.shortMessage}
           </div>
 
@@ -49,29 +53,38 @@ export function SHAList({
             const isSelected = conflict.id === selectedConflictId;
             const status = getFileStatus(conflict, hunkStatuses);
             const fileName = conflict.filePath.split("/").pop()!;
+            const idx = itemIndex++;
 
             return (
               <button
                 key={conflict.id}
                 onClick={() => onSelectConflict(conflict.id)}
                 className={clsx(
-                  "w-full text-left px-4 pl-10 py-2 flex items-center gap-2.5 transition-colors border-l-2",
+                  "animate-fade-in-up w-full text-left px-4 pl-10 py-2 flex items-center gap-2.5 transition-all duration-150 border-l-2 group",
                   isSelected
-                    ? "bg-bg-elevated border-accent-blue"
-                    : "border-transparent hover:bg-bg-elevated/50"
+                    ? "bg-accent-blue/8 border-accent-blue"
+                    : "border-transparent hover:bg-white/[0.02]"
                 )}
+                style={{ animationDelay: `${idx * 40}ms` }}
               >
-                <FileCode className="w-3.5 h-3.5 text-text-secondary flex-shrink-0" />
+                <FileCode
+                  className={clsx(
+                    "w-3.5 h-3.5 flex-shrink-0 transition-colors",
+                    isSelected
+                      ? "text-accent-blue"
+                      : "text-text-secondary/50 group-hover:text-text-secondary"
+                  )}
+                />
                 <span
                   className={clsx(
-                    "text-sm truncate",
-                    isSelected ? "text-text-primary" : "text-text-secondary"
+                    "text-[13px] truncate transition-colors",
+                    isSelected ? "text-text-primary" : "text-text-secondary group-hover:text-text-primary"
                   )}
                 >
                   {fileName}
                 </span>
                 <StatusDot status={status} />
-                <span className="text-xs text-text-secondary/60 ml-auto">
+                <span className="text-[11px] font-mono text-text-secondary/40 ml-auto">
                   {conflict.hunks.length}
                 </span>
               </button>

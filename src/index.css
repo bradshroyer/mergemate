@@ -7,11 +7,14 @@
   --color-border-subtle: #2a2a3a;
   --color-text-primary: #e4e4ef;
   --color-text-secondary: #8888a0;
-  --color-accent-blue: #3b82f6;
+  --color-accent-blue: #c783ff;
   --color-accent-green: #22c55e;
   --color-accent-red: #ef4444;
-  --color-accent-amber: #f59e0b;
+  --color-accent-amber: #2dd4bf;
   --color-accent-purple: #a855f7;
+
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 }
 
 html, body, #root {
@@ -19,19 +22,161 @@ html, body, #root {
   margin: 0;
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Noise texture overlay for depth */
+#root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border-subtle);
-  border-radius: 4px;
+  background: #2a2a3a;
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #3a3a4a;
+}
+
+/* Entry animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger delays for list items */
+.stagger-1 { animation-delay: 30ms; }
+.stagger-2 { animation-delay: 60ms; }
+.stagger-3 { animation-delay: 90ms; }
+.stagger-4 { animation-delay: 120ms; }
+.stagger-5 { animation-delay: 150ms; }
+
+/* Code panels: fade mask on overflow */
+.code-panel-mask {
+  mask-image: linear-gradient(to right, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 92%, transparent 100%);
+}
+
+/* Toast animation */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+}
+
+/* Surface gradients for depth */
+.surface-gradient {
+  background: linear-gradient(180deg, #13131c 0%, #111118 100%);
+}
+
+.elevated-gradient {
+  background: linear-gradient(180deg, #1e1e2a 0%, #1a1a24 100%);
+}
+
+/* Subtle inner glow on focused cards */
+.card-glow {
+  box-shadow:
+    0 0 0 1px rgba(199, 131, 255, 0.08),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.02);
+}
+
+/* Keyboard shortcut badge */
+.kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #1a1a24;
+  border: 1px solid #2a2a3a;
+  color: #8888a0;
+  font-weight: 500;
 }

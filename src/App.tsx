@@ -1,8 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { mockReport } from "./data/mockConflicts";
 import type { ConflictStatus } from "./data/types";
 import { Sidebar } from "./components/layout/Sidebar";
 import { MainContent } from "./components/main/MainContent";
+import { Toolbar } from "./components/layout/Toolbar";
+import { Toast } from "./components/shared/Toast";
 
 function App() {
   const [selectedConflictId, setSelectedConflictId] = useState<string | null>(
@@ -20,16 +22,41 @@ function App() {
     }
     return initial;
   });
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error" | "info";
+  } | null>(null);
 
   const selectedConflict = mockReport.conflicts.find(
     (c) => c.id === selectedConflictId
   );
 
-  const updateHunkStatus = useCallback(
-    (hunkId: string, status: ConflictStatus) => {
-      setHunkStatuses((prev) => ({ ...prev, [hunkId]: status }));
+  const totalHunks = Object.keys(hunkStatuses).length;
+  const approvedCount = Object.values(hunkStatuses).filter(
+    (s) => s === "approved"
+  ).length;
+
+  const showToast = useCallback(
+    (message: string, type: "success" | "error" | "info" = "info") => {
+      setToast({ message, type });
     },
     []
+  );
+
+  const updateHunkStatus = useCallback(
+    (hunkId: string, status: ConflictStatus) => {
+      setHunkStatuses((prev) => {
+        const next = { ...prev, [hunkId]: status };
+        const newApproved = Object.values(next).filter(
+          (s) => s === "approved"
+        ).length;
+        if (newApproved === totalHunks && status === "approved") {
+          setTimeout(() => showToast("All conflicts approved", "success"), 100);
+        }
+        return next;
+      });
+    },
+    [totalHunks, showToast]
   );
 
   const updateAllStatuses = useCallback(
@@ -41,28 +68,65 @@ function App() {
         }
         return next;
       });
+      showToast(
+        status === "approved"
+          ? `All ${totalHunks} conflicts approved`
+          : `All ${totalHunks} conflicts denied`,
+        status === "approved" ? "success" : "error"
+      );
     },
-    []
+    [totalHunks, showToast]
   );
 
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          updateAllStatuses("approved");
+        }
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [updateAllStatuses]);
+
   return (
-    <div className="flex h-screen overflow-hidden font-sans">
-      <Sidebar
-        conflicts={mockReport.conflicts}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        selectedConflictId={selectedConflictId}
-        onSelectConflict={setSelectedConflictId}
-        hunkStatuses={hunkStatuses}
+    <div className="flex flex-col h-screen overflow-hidden font-sans">
+      <Toolbar
+        repoName="GitKraken/backend-api"
+        prNumber={247}
+        baseBranch={mockReport.rebaseInfo.baseBranch}
+        featureBranch={mockReport.rebaseInfo.featureBranch}
+        approvedCount={approvedCount}
+        totalHunks={totalHunks}
       />
-      <MainContent
-        selectedConflict={selectedConflict ?? null}
-        rebaseInfo={mockReport.rebaseInfo}
-        hunkStatuses={hunkStatuses}
-        onUpdateHunkStatus={updateHunkStatus}
-        onApproveAll={() => updateAllStatuses("approved")}
-        onDenyAll={() => updateAllStatuses("denied")}
-      />
+      <div className="flex flex-1 min-h-0">
+        <Sidebar
+          conflicts={mockReport.conflicts}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          selectedConflictId={selectedConflictId}
+          onSelectConflict={setSelectedConflictId}
+          hunkStatuses={hunkStatuses}
+        />
+        <MainContent
+          selectedConflict={selectedConflict ?? null}
+          rebaseInfo={mockReport.rebaseInfo}
+          hunkStatuses={hunkStatuses}
+          onUpdateHunkStatus={updateHunkStatus}
+          onApproveAll={() => updateAllStatuses("approved")}
+          onDenyAll={() => updateAllStatuses("denied")}
+        />
+      </div>
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onDismiss={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

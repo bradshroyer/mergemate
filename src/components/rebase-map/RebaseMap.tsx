@@ -128,7 +128,7 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
           <path
             d={`M ${startX} ${mainY} Q ${startX + gap * 0.5} ${mainY + 20} ${startX + gap} ${featureY}`}
             fill="none"
-            stroke="#3b82f6"
+            stroke="#c783ff"
             strokeWidth="2"
             strokeDasharray="4 3"
           />
@@ -139,7 +139,7 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
             y1={featureY}
             x2={featureBeforeCommits[featureBeforeCommits.length - 1].x}
             y2={featureY}
-            stroke="#3b82f6"
+            stroke="#c783ff"
             strokeWidth="2"
             strokeLinecap="round"
           />
@@ -161,8 +161,8 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
                 cx={c.x}
                 cy={featureY}
                 r={r}
-                fill={c.isConflict ? "#451a03" : "#172554"}
-                stroke={c.isConflict ? "#f59e0b" : "#3b82f6"}
+                fill={c.isConflict ? "#0d2d2a" : "#2a1845"}
+                stroke={c.isConflict ? "#2dd4bf" : "#c783ff"}
                 strokeWidth="2"
               />
               {c.isConflict && (
@@ -171,7 +171,7 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
                   cy={featureY}
                   r={r + 4}
                   fill="none"
-                  stroke="#f59e0b"
+                  stroke="#2dd4bf"
                   strokeWidth="1"
                   opacity="0.4"
                 />
@@ -265,8 +265,8 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
                 cx={c.x}
                 cy={mainY}
                 r={r}
-                fill={c.isConflict ? "#451a03" : "#172554"}
-                stroke={c.isConflict ? "#f59e0b" : "#3b82f6"}
+                fill={c.isConflict ? "#0d2d2a" : "#2a1845"}
+                stroke={c.isConflict ? "#2dd4bf" : "#c783ff"}
                 strokeWidth="2"
               />
               {c.isConflict && (
@@ -275,7 +275,7 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
                   cy={mainY}
                   r={r + 4}
                   fill="none"
-                  stroke="#f59e0b"
+                  stroke="#2dd4bf"
                   strokeWidth="1"
                   opacity="0.4"
                 />

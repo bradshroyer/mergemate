@@ -33,6 +33,7 @@ export function MainContent({
       <div className="flex-1 overflow-y-auto">
         {selectedConflict ? (
           <ConflictDetail
+            key={selectedConflict.id}
             conflict={selectedConflict}
             rebaseInfo={rebaseInfo}
             hunkStatuses={hunkStatuses}
