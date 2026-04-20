@@ -1,5 +1,6 @@
 import { ArrowRight, Check, X } from "lucide-react";
 import clsx from "clsx";
+import { FeedbackControl } from "./FeedbackControl";
 
 interface ActionBarProps {
   totalHunks: number;
@@ -69,7 +70,10 @@ export function ActionBar({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-1">
+      <div className="flex items-center">
+        <FeedbackControl />
+        <span className="w-px h-4 bg-border-subtle/60 mx-2.5" />
+        <div className="flex items-center gap-1">
         {allReviewed ? (
           allDenied ? (
             <button
@@ -164,6 +168,7 @@ export function ActionBar({
             </button>
           </>
         )}
+        </div>
       </div>
     </div>
   );
