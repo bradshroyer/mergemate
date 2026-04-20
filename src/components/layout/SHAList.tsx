@@ -1,7 +1,7 @@
 import { GitCommitHorizontal, FileCode } from "lucide-react";
 import clsx from "clsx";
 import type { FileConflict, ConflictStatus } from "../../data/types";
-import { StatusDot } from "../shared/StatusDot";
+import { StatusDot, type DotStatus } from "../shared/StatusDot";
 
 interface SHAListProps {
   conflicts: FileConflict[];
@@ -13,8 +13,26 @@ interface SHAListProps {
 function getFileStatus(
   conflict: FileConflict,
   hunkStatuses: Record<string, ConflictStatus>
-): ConflictStatus {
+): DotStatus {
   const statuses = conflict.hunks.map((h) => hunkStatuses[h.id] ?? "pending");
+  const hasApproved = statuses.some((s) => s === "approved");
+  const hasDenied = statuses.some((s) => s === "denied");
+  if (hasApproved && hasDenied) return "mixed";
+  if (statuses.every((s) => s === "approved")) return "approved";
+  if (statuses.every((s) => s === "denied")) return "denied";
+  return "pending";
+}
+
+function getShaStatus(
+  files: FileConflict[],
+  hunkStatuses: Record<string, ConflictStatus>
+): DotStatus {
+  const statuses = files.flatMap((f) =>
+    f.hunks.map((h) => hunkStatuses[h.id] ?? "pending")
+  );
+  const hasApproved = statuses.some((s) => s === "approved");
+  const hasDenied = statuses.some((s) => s === "denied");
+  if (hasApproved && hasDenied) return "mixed";
   if (statuses.every((s) => s === "approved")) return "approved";
   if (statuses.every((s) => s === "denied")) return "denied";
   return "pending";
@@ -44,6 +62,7 @@ export function SHAList({
             <code className="text-[11px] font-mono font-medium text-accent-amber">
               {sha}
             </code>
+            <StatusDot status={getShaStatus(files, hunkStatuses)} />
           </div>
           <div className="text-[11px] text-text-secondary/60 px-4 pb-1.5 pl-10 -mt-1 truncate">
             {files[0].commit.shortMessage}

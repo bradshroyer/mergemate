@@ -1,7 +1,7 @@
 import { FileCode } from "lucide-react";
 import clsx from "clsx";
 import type { FileConflict, ConflictStatus } from "../../data/types";
-import { StatusDot } from "../shared/StatusDot";
+import { StatusDot, type DotStatus } from "../shared/StatusDot";
 
 interface FileListProps {
   conflicts: FileConflict[];
@@ -13,8 +13,11 @@ interface FileListProps {
 function getFileStatus(
   conflict: FileConflict,
   hunkStatuses: Record<string, ConflictStatus>
-): ConflictStatus {
+): DotStatus {
   const statuses = conflict.hunks.map((h) => hunkStatuses[h.id] ?? "pending");
+  const hasApproved = statuses.some((s) => s === "approved");
+  const hasDenied = statuses.some((s) => s === "denied");
+  if (hasApproved && hasDenied) return "mixed";
   if (statuses.every((s) => s === "approved")) return "approved";
   if (statuses.every((s) => s === "denied")) return "denied";
   return "pending";
