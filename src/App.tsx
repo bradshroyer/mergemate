@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { mockReport } from "./data/mockConflicts";
 import type { ConflictStatus } from "./data/types";
 import { Sidebar } from "./components/layout/Sidebar";
@@ -35,6 +35,10 @@ function App() {
   const approvedCount = Object.values(hunkStatuses).filter(
     (s) => s === "approved"
   ).length;
+  const deniedCount = Object.values(hunkStatuses).filter(
+    (s) => s === "denied"
+  ).length;
+  const reviewedCount = approvedCount + deniedCount;
 
   const showToast = useCallback(
     (message: string, type: "success" | "error" | "info" = "info") => {
@@ -78,19 +82,12 @@ function App() {
     [totalHunks, showToast]
   );
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          updateAllStatuses("approved");
-        }
-      }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [updateAllStatuses]);
+  const applyResolutions = useCallback(() => {
+    showToast(
+      `Resolutions applied · ${approvedCount} approved, ${deniedCount} denied`,
+      "success"
+    );
+  }, [approvedCount, deniedCount, showToast]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden font-sans">
@@ -99,7 +96,7 @@ function App() {
         prNumber={247}
         baseBranch={mockReport.rebaseInfo.baseBranch}
         featureBranch={mockReport.rebaseInfo.featureBranch}
-        approvedCount={approvedCount}
+        reviewedCount={reviewedCount}
         totalHunks={totalHunks}
       />
       <div className="flex flex-1 min-h-0">
@@ -118,6 +115,7 @@ function App() {
           onUpdateHunkStatus={updateHunkStatus}
           onApproveAll={() => updateAllStatuses("approved")}
           onDenyAll={() => updateAllStatuses("denied")}
+          onApplyResolutions={applyResolutions}
         />
       </div>
       {toast && (

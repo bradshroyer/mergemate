@@ -10,6 +10,7 @@ interface MainContentProps {
   onUpdateHunkStatus: (hunkId: string, status: ConflictStatus) => void;
   onApproveAll: () => void;
   onDenyAll: () => void;
+  onApplyResolutions: () => void;
 }
 
 export function MainContent({
@@ -19,6 +20,7 @@ export function MainContent({
   onUpdateHunkStatus,
   onApproveAll,
   onDenyAll,
+  onApplyResolutions,
 }: MainContentProps) {
   const totalHunks = Object.keys(hunkStatuses).length;
   const approvedCount = Object.values(hunkStatuses).filter(
@@ -49,6 +51,7 @@ export function MainContent({
         deniedCount={deniedCount}
         onApproveAll={onApproveAll}
         onDenyAll={onDenyAll}
+        onApplyResolutions={onApplyResolutions}
       />
     </div>
   );

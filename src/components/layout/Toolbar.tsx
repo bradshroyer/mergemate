@@ -5,7 +5,7 @@ interface ToolbarProps {
   prNumber: number;
   baseBranch: string;
   featureBranch: string;
-  approvedCount: number;
+  reviewedCount: number;
   totalHunks: number;
 }
 
@@ -14,10 +14,10 @@ export function Toolbar({
   prNumber,
   baseBranch,
   featureBranch,
-  approvedCount,
+  reviewedCount,
   totalHunks,
 }: ToolbarProps) {
-  const progress = totalHunks > 0 ? (approvedCount / totalHunks) * 100 : 0;
+  const progress = totalHunks > 0 ? (reviewedCount / totalHunks) * 100 : 0;
 
   return (
     <div className="h-11 flex-shrink-0 border-b border-border-subtle surface-gradient flex items-center px-4 gap-4 animate-fade-in">
@@ -51,7 +51,7 @@ export function Toolbar({
         <div className="flex items-center gap-1.5 text-[11px]">
           <span className="text-text-secondary">Review progress</span>
           <span className="font-mono font-medium text-text-primary">
-            {approvedCount}/{totalHunks}
+            {reviewedCount}/{totalHunks}
           </span>
         </div>
         <div className="w-20 h-1.5 rounded-full bg-bg-elevated overflow-hidden">
@@ -66,12 +66,6 @@ export function Toolbar({
             }}
           />
         </div>
-      </div>
-
-      {/* Keyboard hint */}
-      <div className="hidden lg:flex items-center gap-1.5 text-[10px] text-text-secondary/50">
-        <kbd className="kbd">&#8984;&#9166;</kbd>
-        <span>approve all</span>
       </div>
     </div>
   );
