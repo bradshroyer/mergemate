@@ -83,10 +83,19 @@ function App() {
   );
 
   const applyResolutions = useCallback(() => {
-    showToast(
-      `Resolutions applied · ${approvedCount} approved, ${deniedCount} denied`,
-      "success"
-    );
+    if (approvedCount === 0) {
+      showToast(
+        `Rejected all ${deniedCount} resolutions \u00b7 resolve manually`,
+        "error"
+      );
+    } else if (deniedCount === 0) {
+      showToast(`Applied ${approvedCount} resolutions`, "success");
+    } else {
+      showToast(
+        `Applied ${approvedCount} resolutions \u00b7 skipped ${deniedCount}`,
+        "success"
+      );
+    }
   }, [approvedCount, deniedCount, showToast]);
 
   return (

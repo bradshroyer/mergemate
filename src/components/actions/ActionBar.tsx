@@ -1,4 +1,4 @@
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, X } from "lucide-react";
 import clsx from "clsx";
 
 interface ActionBarProps {
@@ -20,6 +20,7 @@ export function ActionBar({
 }: ActionBarProps) {
   const pendingCount = totalHunks - approvedCount - deniedCount;
   const allReviewed = pendingCount === 0 && totalHunks > 0;
+  const allDenied = allReviewed && approvedCount === 0;
 
   return (
     <div className="border-t border-border-subtle surface-gradient px-6 py-3 flex items-center justify-between gap-6">
@@ -70,29 +71,60 @@ export function ActionBar({
       {/* Actions */}
       <div className="flex items-center gap-1">
         {allReviewed ? (
-          <button
-            onClick={onApplyResolutions}
-            className="group relative flex items-center gap-2 pl-4 pr-3 py-2 rounded-lg text-[12px] font-semibold tracking-tight transition-all duration-200 overflow-hidden text-white shadow-lg hover:shadow-xl active:scale-[0.98]"
-            style={{
-              background:
-                "linear-gradient(135deg, #22c55e 0%, #10b981 50%, #2dd4bf 130%)",
-              boxShadow:
-                "0 4px 16px -4px rgba(34, 197, 94, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
-            }}
-          >
-            <span
-              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          allDenied ? (
+            <button
+              onClick={onApplyResolutions}
+              className="group relative flex items-center gap-2 pl-4 pr-3 py-2 rounded-lg text-[12px] font-semibold tracking-tight transition-all duration-200 overflow-hidden text-white shadow-lg hover:shadow-xl active:scale-[0.98]"
               style={{
                 background:
-                  "linear-gradient(135deg, #2dd269 0%, #14cc97 50%, #4ee0cc 130%)",
+                  "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 130%)",
+                boxShadow:
+                  "0 4px 16px -4px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
               }}
-            />
-            <span className="relative flex items-center gap-2">
-              <Check className="w-3.5 h-3.5" />
-              <span>Apply resolutions</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
-            </span>
-          </button>
+            >
+              <span
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #f56565 0%, #e53e3e 50%, #c53030 130%)",
+                }}
+              />
+              <span className="relative flex items-center gap-2">
+                <X className="w-3.5 h-3.5" />
+                <span>Reject resolutions</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </span>
+            </button>
+          ) : (
+            <button
+              onClick={onApplyResolutions}
+              className="group relative flex items-center gap-2 pl-4 pr-3 py-2 rounded-lg text-[12px] font-semibold tracking-tight transition-all duration-200 overflow-hidden text-white shadow-lg hover:shadow-xl active:scale-[0.98]"
+              style={{
+                background:
+                  "linear-gradient(135deg, #22c55e 0%, #10b981 50%, #2dd4bf 130%)",
+                boxShadow:
+                  "0 4px 16px -4px rgba(34, 197, 94, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+              }}
+            >
+              <span
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #2dd269 0%, #14cc97 50%, #4ee0cc 130%)",
+                }}
+              />
+              <span className="relative flex items-center gap-2">
+                <Check className="w-3.5 h-3.5" />
+                <span>Apply resolutions</span>
+                {deniedCount > 0 && (
+                  <span className="flex items-center justify-center min-w-[20px] h-[18px] px-1.5 rounded-md bg-black/25 text-[10px] font-mono font-bold leading-none ring-1 ring-white/10">
+                    {approvedCount}
+                  </span>
+                )}
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+              </span>
+            </button>
+          )
         ) : (
           <>
             <button
