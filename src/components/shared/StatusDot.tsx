@@ -16,7 +16,7 @@ export function StatusDot({ status }: { status: DotStatus }) {
           status === "mixed"
             ? {
                 background:
-                  "linear-gradient(90deg, #22c55e 0%, #22c55e 50%, #ef4444 50%, #ef4444 100%)",
+                  "linear-gradient(135deg, #22c55e 0%, #22c55e 50%, #ef4444 50%, #ef4444 100%)",
               }
             : undefined
         }
