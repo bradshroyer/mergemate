@@ -25,6 +25,7 @@ function App() {
   const [toast, setToast] = useState<{
     message: string;
     type: "success" | "error" | "info";
+    action?: { label: string; onClick: () => void };
   } | null>(null);
 
   const selectedConflict = mockReport.conflicts.find(
@@ -41,8 +42,12 @@ function App() {
   const reviewedCount = approvedCount + deniedCount;
 
   const showToast = useCallback(
-    (message: string, type: "success" | "error" | "info" = "info") => {
-      setToast({ message, type });
+    (
+      message: string,
+      type: "success" | "error" | "info" = "info",
+      action?: { label: string; onClick: () => void }
+    ) => {
+      setToast({ message, type, action });
     },
     []
   );
@@ -65,7 +70,9 @@ function App() {
 
   const updateAllStatuses = useCallback(
     (status: ConflictStatus) => {
+      let snapshot: Record<string, ConflictStatus> | null = null;
       setHunkStatuses((prev) => {
+        snapshot = prev;
         const next = { ...prev };
         for (const key of Object.keys(next)) {
           next[key] = status;
@@ -76,7 +83,13 @@ function App() {
         status === "approved"
           ? `All ${totalHunks} conflicts approved`
           : `All ${totalHunks} conflicts denied`,
-        status === "approved" ? "success" : "error"
+        status === "approved" ? "success" : "error",
+        {
+          label: "Undo",
+          onClick: () => {
+            if (snapshot) setHunkStatuses(snapshot);
+          },
+        }
       );
     },
     [totalHunks, showToast]
@@ -131,6 +144,7 @@ function App() {
         <Toast
           message={toast.message}
           type={toast.type}
+          action={toast.action}
           onDismiss={() => setToast(null)}
         />
       )}

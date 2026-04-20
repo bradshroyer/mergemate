@@ -1,10 +1,16 @@
 import { useEffect } from "react";
-import { CheckCircle2, XCircle, Info } from "lucide-react";
+import { CheckCircle2, XCircle, Info, Undo2 } from "lucide-react";
+
+interface ToastAction {
+  label: string;
+  onClick: () => void;
+}
 
 interface ToastProps {
   message: string;
   type: "success" | "error" | "info";
   onDismiss: () => void;
+  action?: ToastAction;
 }
 
 const icons = {
@@ -25,13 +31,14 @@ const bgColors = {
   info: "bg-accent-blue/8",
 };
 
-export function Toast({ message, type, onDismiss }: ToastProps) {
+export function Toast({ message, type, onDismiss, action }: ToastProps) {
   const Icon = icons[type];
+  const duration = action ? 5000 : 2800;
 
   useEffect(() => {
-    const timer = setTimeout(onDismiss, 2800);
+    const timer = setTimeout(onDismiss, duration);
     return () => clearTimeout(timer);
-  }, [onDismiss]);
+  }, [onDismiss, duration]);
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
@@ -41,6 +48,21 @@ export function Toast({ message, type, onDismiss }: ToastProps) {
       >
         <Icon className={`w-4 h-4 ${colors[type]}`} />
         <span className="text-sm font-medium text-text-primary">{message}</span>
+        {action && (
+          <>
+            <span className="w-px h-4 bg-border-subtle ml-1" />
+            <button
+              onClick={() => {
+                action.onClick();
+                onDismiss();
+              }}
+              className="flex items-center gap-1 text-[12px] font-semibold text-text-primary hover:text-accent-blue transition-colors"
+            >
+              <Undo2 className="w-3 h-3" />
+              {action.label}
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
