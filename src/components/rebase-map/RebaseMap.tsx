@@ -1,12 +1,18 @@
 import { Info } from "lucide-react";
+import type { KeyboardEvent, MouseEvent } from "react";
 import type { RebaseInfo } from "../../data/types";
 
 interface RebaseMapProps {
   rebaseInfo: RebaseInfo;
   conflictSha: string;
+  onSelectConflictSha?: (sha: string) => void;
 }
 
-export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
+export function RebaseMap({
+  rebaseInfo,
+  conflictSha,
+  onSelectConflictSha,
+}: RebaseMapProps) {
   const { baseBranch, featureBranch, originalBase, newBase, commits } =
     rebaseInfo;
 
@@ -53,11 +59,35 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
   const afterStartX = dividerX + gap;
   const afterMainX = afterStartX;
   const afterFeatureCommits = commits.map((c, i) => ({
-    sha: c.sha + "'",
+    sha: c.sha,
+    replaySha: c.sha + "'",
     label: c.sha.slice(0, 7) + "'",
     x: afterStartX + gap * (i + 1),
     isConflict: c.sha === conflictSha,
   }));
+
+  const isSelectable = Boolean(onSelectConflictSha);
+  const interactiveCommitClass = isSelectable
+    ? "cursor-pointer transition-[filter,opacity] duration-150 [outline:none] focus:[outline:none] focus-visible:[outline:none] active:[filter:brightness(0.9)]"
+    : undefined;
+
+  const handleSelectSha = (sha: string) => {
+    onSelectConflictSha?.(sha);
+  };
+
+  const handleCommitKeyDown = (
+    event: KeyboardEvent<SVGGElement>,
+    sha: string
+  ) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleSelectSha(sha);
+    }
+  };
+
+  const handleCommitMouseDown = (event: MouseEvent<SVGGElement>) => {
+    event.preventDefault();
+  };
 
   return (
     <div className="rounded-xl border border-border-subtle bg-bg-surface overflow-hidden">
@@ -156,7 +186,20 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
 
           {/* Feature branch commits (before) */}
           {featureBeforeCommits.map((c) => (
-            <g key={c.sha}>
+            <g
+              key={c.sha}
+              className={interactiveCommitClass}
+              role={isSelectable ? "button" : undefined}
+              tabIndex={isSelectable ? 0 : undefined}
+              aria-label={isSelectable ? `Select commit ${c.sha}` : undefined}
+              onClick={isSelectable ? () => handleSelectSha(c.sha) : undefined}
+              onKeyDown={
+                isSelectable
+                  ? (event) => handleCommitKeyDown(event, c.sha)
+                  : undefined
+              }
+              onMouseDown={isSelectable ? handleCommitMouseDown : undefined}
+            >
               <circle
                 cx={c.x}
                 cy={featureY}
@@ -260,7 +303,20 @@ export function RebaseMap({ rebaseInfo, conflictSha }: RebaseMapProps) {
 
           {/* Replayed feature commits on top of main */}
           {afterFeatureCommits.map((c) => (
-            <g key={c.sha}>
+            <g
+              key={c.replaySha}
+              className={interactiveCommitClass}
+              role={isSelectable ? "button" : undefined}
+              tabIndex={isSelectable ? 0 : undefined}
+              aria-label={isSelectable ? `Select commit ${c.sha}` : undefined}
+              onClick={isSelectable ? () => handleSelectSha(c.sha) : undefined}
+              onKeyDown={
+                isSelectable
+                  ? (event) => handleCommitKeyDown(event, c.sha)
+                  : undefined
+              }
+              onMouseDown={isSelectable ? handleCommitMouseDown : undefined}
+            >
               <circle
                 cx={c.x}
                 cy={mainY}

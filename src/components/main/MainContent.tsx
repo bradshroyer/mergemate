@@ -8,6 +8,7 @@ interface MainContentProps {
   rebaseInfo: RebaseInfo;
   hunkStatuses: Record<string, ConflictStatus>;
   onUpdateHunkStatus: (hunkId: string, status: ConflictStatus) => void;
+  onSelectConflictSha: (sha: string) => void;
   onApproveAll: () => void;
   onDenyAll: () => void;
   onApplyResolutions: () => void;
@@ -18,6 +19,7 @@ export function MainContent({
   rebaseInfo,
   hunkStatuses,
   onUpdateHunkStatus,
+  onSelectConflictSha,
   onApproveAll,
   onDenyAll,
   onApplyResolutions,
@@ -40,6 +42,7 @@ export function MainContent({
             rebaseInfo={rebaseInfo}
             hunkStatuses={hunkStatuses}
             onUpdateHunkStatus={onUpdateHunkStatus}
+            onSelectConflictSha={onSelectConflictSha}
           />
         ) : (
           <EmptyState />

@@ -10,6 +10,7 @@ interface ConflictDetailProps {
   rebaseInfo: RebaseInfo;
   hunkStatuses: Record<string, ConflictStatus>;
   onUpdateHunkStatus: (hunkId: string, status: ConflictStatus) => void;
+  onSelectConflictSha: (sha: string) => void;
 }
 
 export function ConflictDetail({
@@ -17,6 +18,7 @@ export function ConflictDetail({
   rebaseInfo,
   hunkStatuses,
   onUpdateHunkStatus,
+  onSelectConflictSha,
 }: ConflictDetailProps) {
   return (
     <div className="p-6 space-y-5">
@@ -42,7 +44,11 @@ export function ConflictDetail({
 
       {/* Rebase map */}
       <div className="animate-fade-in-up" style={{ animationDelay: "60ms" }}>
-        <RebaseMap rebaseInfo={rebaseInfo} conflictSha={conflict.commit.sha} />
+        <RebaseMap
+          rebaseInfo={rebaseInfo}
+          conflictSha={conflict.commit.sha}
+          onSelectConflictSha={onSelectConflictSha}
+        />
       </div>
 
       {/* Hunks */}

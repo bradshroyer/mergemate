@@ -111,6 +111,20 @@ function App() {
     }
   }, [approvedCount, deniedCount, showToast]);
 
+  const selectConflictBySha = useCallback((sha: string) => {
+    setSelectedConflictId((currentId) => {
+      const currentConflict = mockReport.conflicts.find(
+        (conflict) => conflict.id === currentId
+      );
+      if (currentConflict?.commit.sha === sha) return currentId;
+
+      const nextConflict = mockReport.conflicts.find(
+        (conflict) => conflict.commit.sha === sha
+      );
+      return nextConflict?.id ?? currentId;
+    });
+  }, []);
+
   return (
     <div className="flex flex-col h-screen overflow-hidden font-sans">
       <Toolbar
@@ -135,6 +149,7 @@ function App() {
           rebaseInfo={mockReport.rebaseInfo}
           hunkStatuses={hunkStatuses}
           onUpdateHunkStatus={updateHunkStatus}
+          onSelectConflictSha={selectConflictBySha}
           onApproveAll={() => updateAllStatuses("approved")}
           onDenyAll={() => updateAllStatuses("denied")}
           onApplyResolutions={applyResolutions}

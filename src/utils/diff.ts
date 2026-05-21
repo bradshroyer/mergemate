@@ -160,19 +160,6 @@ export function computeThreeWayDiff(
   conflicting: DiffLine[];
   aiResolution: DiffLine[];
 } {
-  // Diff original vs conflicting
-  const leftDiff = computeLineDiff(original, conflicting);
-  // Diff original vs aiResolution
-  const rightDiff = computeLineDiff(original, aiResolution);
-
-  // For the three-panel view, we independently highlight each pair:
-  // - Original column: lines that differ from conflicting get a subtle marker
-  // - Conflict column: lines that differ from original get red highlights
-  // - AI Resolution column: lines that differ from conflicting get green highlights
-
-  const origVsConflict = computeLineDiff(original, conflicting);
-  const conflictVsAi = computeLineDiff(conflicting, aiResolution);
-
   // For original: mark lines that are different in the conflict
   const origLines = original.trim().split("\n");
   const conflictLines = conflicting.trim().split("\n");
