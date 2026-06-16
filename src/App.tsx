@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { mockReport } from "./data/mockConflicts";
 import type { ConflictStatus } from "./data/types";
 import { Sidebar } from "./components/layout/Sidebar";
@@ -110,6 +110,50 @@ function App() {
       );
     }
   }, [approvedCount, deniedCount, showToast]);
+
+  // J/K/A/D keyboard shortcuts — use a ref so the effect never needs to re-register
+  const updateAllStatusesRef = useRef(updateAllStatuses);
+  updateAllStatusesRef.current = updateAllStatuses;
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.altKey
+      )
+        return;
+
+      const conflicts = mockReport.conflicts;
+      if (conflicts.length === 0) return;
+
+      if (e.key === "j" || e.key === "J") {
+        e.preventDefault();
+        setSelectedConflictId((curr) => {
+          const idx = conflicts.findIndex((c) => c.id === curr);
+          return conflicts[(idx + 1) % conflicts.length].id;
+        });
+      } else if (e.key === "k" || e.key === "K") {
+        e.preventDefault();
+        setSelectedConflictId((curr) => {
+          const idx = conflicts.findIndex((c) => c.id === curr);
+          const prev = (idx - 1 + conflicts.length) % conflicts.length;
+          return conflicts[prev].id;
+        });
+      } else if (e.key === "a" || e.key === "A") {
+        e.preventDefault();
+        updateAllStatusesRef.current("approved");
+      } else if (e.key === "d" || e.key === "D") {
+        e.preventDefault();
+        updateAllStatusesRef.current("denied");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   const selectConflictBySha = useCallback((sha: string) => {
     setSelectedConflictId((currentId) => {

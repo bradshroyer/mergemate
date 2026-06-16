@@ -68,11 +68,14 @@ function DiffCodeBlock({
     <div
       className={clsx(
         "flex flex-col min-w-0 relative",
-        elevated && "bg-accent-green/[0.02]"
+        elevated && "bg-accent-green/[0.06]"
       )}
     >
       <div
-        className="text-[11px] font-semibold px-3 py-1.5 border-b border-border-subtle tracking-wide uppercase flex items-center gap-1.5"
+        className={clsx(
+          "font-semibold px-3 border-b border-border-subtle tracking-wide uppercase flex items-center gap-1.5",
+          elevated ? "text-[12px] py-2 bg-accent-green/[0.08]" : "text-[11px] py-1.5"
+        )}
         style={{ color: labelColor }}
       >
         {elevated && (
@@ -215,8 +218,8 @@ export function ThreePanelDiff({
         labelColor="#22c55e"
         elevated
         diffLines={diff.aiResolution}
-        lineBgClass="bg-accent-green/[0.06] border-accent-green/30"
-        markClass="bg-accent-green/20 rounded-sm px-px text-accent-green/90"
+        lineBgClass="bg-accent-green/[0.14] border-accent-green/50"
+        markClass="bg-accent-green/25 rounded-sm px-px text-accent-green"
         scrollRef={rightRef}
         onScroll={() => syncScroll(rightRef)}
       />

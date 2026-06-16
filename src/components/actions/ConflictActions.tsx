@@ -23,7 +23,7 @@ export function ConflictActions({
           "flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all duration-150",
           status === "approved"
             ? "bg-accent-green/15 text-accent-green ring-1 ring-accent-green/25 shadow-sm shadow-accent-green/10"
-            : "text-text-secondary/60 hover:text-accent-green hover:bg-accent-green/8"
+            : "text-text-secondary/60 hover:text-white hover:bg-accent-green/75 hover:shadow-sm hover:shadow-accent-green/20"
         )}
       >
         <Check className="w-3 h-3" />

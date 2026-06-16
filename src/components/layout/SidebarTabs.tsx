@@ -31,7 +31,7 @@ export function SidebarTabs({ activeTab, onTabChange }: SidebarTabsProps) {
         )}
       >
         <GitCommitHorizontal className="w-3.5 h-3.5" />
-        By SHA
+        By Commit
       </button>
     </div>
   );

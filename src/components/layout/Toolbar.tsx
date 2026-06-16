@@ -48,13 +48,22 @@ export function Toolbar({
 
       {/* Progress indicator */}
       <div className="flex items-center gap-2.5">
-        <div className="flex items-center gap-1.5 text-[11px]">
-          <span className="text-text-secondary">Review progress</span>
-          <span className="font-mono font-medium text-text-primary">
-            {reviewedCount}/{totalHunks}
+        <div className="flex items-center gap-1 font-mono">
+          <span
+            className="text-[14px] font-semibold tabular-nums transition-colors duration-300"
+            style={{ color: progress === 100 ? "#22c55e" : "#e4e4ef" }}
+          >
+            {reviewedCount}
+          </span>
+          <span className="text-[11px] text-text-secondary/30 mx-0.5">/</span>
+          <span className="text-[13px] text-text-secondary/50 tabular-nums">
+            {totalHunks}
+          </span>
+          <span className="text-[10px] text-text-secondary/35 ml-1.5 font-sans font-normal tracking-wide">
+            reviewed
           </span>
         </div>
-        <div className="w-20 h-1.5 rounded-full bg-bg-elevated overflow-hidden">
+        <div className="w-24 h-2 rounded-full bg-bg-elevated overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-500 ease-out"
             style={{

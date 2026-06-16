@@ -1,4 +1,5 @@
-import { Info } from "lucide-react";
+import { Info, ChevronDown } from "lucide-react";
+import { useState } from "react";
 import type { KeyboardEvent, MouseEvent } from "react";
 import type { RebaseInfo } from "../../data/types";
 
@@ -13,6 +14,7 @@ export function RebaseMap({
   conflictSha,
   onSelectConflictSha,
 }: RebaseMapProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const { baseBranch, featureBranch, originalBase, newBase, commits } =
     rebaseInfo;
 
@@ -91,17 +93,25 @@ export function RebaseMap({
 
   return (
     <div className="rounded-xl border border-border-subtle bg-bg-surface overflow-hidden">
-      <div className="px-4 py-3 border-b border-border-subtle bg-bg-elevated/50 flex items-center gap-2">
-        <Info className="w-3.5 h-3.5 text-accent-blue" />
+      <button
+        onClick={() => setIsExpanded((v) => !v)}
+        className="w-full px-4 py-3 flex items-center gap-2 bg-bg-elevated/50 hover:bg-bg-elevated/80 transition-colors duration-150 text-left"
+      >
+        <Info className="w-3.5 h-3.5 text-accent-blue flex-shrink-0" />
         <span className="text-xs font-medium text-text-primary">
           Rebase Map
         </span>
         <span className="text-xs text-text-secondary">
           {featureBranch} onto {baseBranch}
         </span>
-      </div>
+        <ChevronDown
+          className="w-3.5 h-3.5 text-text-secondary/40 ml-auto transition-transform duration-200"
+          style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
+        />
+      </button>
 
-      <div className="p-4 overflow-x-auto">
+      {isExpanded && <div className="border-t border-border-subtle" />}
+      {isExpanded && <div className="p-4 overflow-x-auto">
         <svg
           viewBox={`0 0 ${w} ${h}`}
           className="w-full max-w-4xl mx-auto"
@@ -356,14 +366,15 @@ export function RebaseMap({
             HEAD
           </text>
         </svg>
-      </div>
+      </div>}
 
-      {/* Description */}
-      <div className="px-4 py-3 border-t border-border-subtle">
-        <p className="text-xs text-text-secondary leading-relaxed">
-          {rebaseInfo.description}
-        </p>
-      </div>
+      {isExpanded && (
+        <div className="px-4 py-3 border-t border-border-subtle">
+          <p className="text-xs text-text-secondary leading-relaxed">
+            {rebaseInfo.description}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
